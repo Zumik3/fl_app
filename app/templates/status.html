@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    {% endblock %}
+
+    <title>Status</title>
+    {% endblock %}
+</head>
+<body>
+<!-- Your page content -->
+{% block content %}
+
+
+<div class="container">
+    {% for item in status_table: %}
+        <p class="text-center align-middle">{{ item }}</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Optional JavaScript -->
+{{ bootstrap.load_js() }}
+
+{% endblock %}
+</body>
+</html>

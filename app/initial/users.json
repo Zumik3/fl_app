@@ -1,0 +1,20 @@
+[
+   {
+      "active":true,
+      "email":"john@doe.com",
+      "username":"john",
+      "password":"john"
+   },
+   {
+      "active":true,
+      "email":"suzana@microsoft.com",
+      "username":"suzana",
+      "password":"suzana"
+   },
+   {
+      "active":true,
+      "email":"roger@pirate.jp",
+      "username":"roger",
+      "password":"roger"
+   }
+]
