@@ -21,6 +21,11 @@ def append_picture_for_select(element):
     return result
 
 
+def get_pictures_for_item(item):
+    cursor = db_connector.Image.select().where(db_connector.Image.item == item)
+    return [base64.encodebytes(element.image).decode('UTF-8') for element in cursor]
+
+
 def append_picture_for_insert(element):
     item = db_connector.Item.get_or_none(db_connector.Item.uuid == element['item'])
     if item is not None:

@@ -1,8 +1,9 @@
-from flask import Blueprint, abort, Response, json, request, render_template
-from app import db_connector, db_handler, excel_handler
+from flask import Blueprint, request, render_template
+from app import db_connector, db_handler
 from app.auth import auth
 from app.support import resp, create_response
 
+ARTICLE_SELECT_LIMIT = 100
 internal_access = Blueprint('internal_access', __name__, template_folder='templates')
 
 
@@ -93,15 +94,22 @@ def articles_list():
 
     if keyword is not None:
         query_result = db_connector.Item.select().where(
-            db_connector.Item.article.contains(keyword)).order_by(db_connector.Item.group)
+            db_connector.Item.article.contains(keyword)).order_by(db_connector.Item.group)\
+                .limit(ARTICLE_SELECT_LIMIT)
 
         current_group = None
+        # a_list = []
         for i in query_result:
             if current_group != i.group:
                 articles[i.group] = []
                 current_group = i.group
 
-            articles[i.group].append({'article': i.article, 'uuid': i.uuid})
+            temp_d = {'article': i.article, 'uuid': i.uuid,
+                      'pictures': db_handler.get_pictures_for_item(i)}
+            articles[i.group].append(temp_d)
+            # a_list.append(i)
+
+        # res = db_handler.append_pictures_for_article_list(a_list)
 
     return render_template('article_list.html', articles=articles)
 
