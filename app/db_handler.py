@@ -30,7 +30,7 @@ def append_picture_for_insert(element):
         return None
 
 
-def check_articles(collection):
+def check_articles(collection) -> list:
     def check_article(uuid):
         return db_connector.Item.get_or_none(db_connector.Item.uuid == uuid)
 
@@ -38,7 +38,7 @@ def check_articles(collection):
     return [item for item in items if item is None]
 
 
-def create_link(articles):
+def create_link(articles) -> str:
     link_uuid = uuid4()
     collection = [{'ref': link_uuid, 'data': articles}]
     insert_rows('link', collection)
