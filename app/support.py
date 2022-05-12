@@ -23,7 +23,7 @@ def resp(code, data):
                     response=json.dumps(data) + '\n')
 
 
-def create_response(success=True, error=None, ref=None):
+def create_response(success=True, error=None, ref=None) -> dict:
     """
     Creates dict for HTTP response
     :param success:
