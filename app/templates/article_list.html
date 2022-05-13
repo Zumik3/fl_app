@@ -54,26 +54,25 @@
 
 <div class="container-fluid">
     {% if articles|length == 0 %}
-        <br>
-        <p>Введите артикул в поле поиска и нажмите ОК...</p>
+    <br>
+    <p>Введите артикул в поле поиска и нажмите ОК...</p>
     {% else %}
     {% for item in articles: %}
     <div class="list-group">
         <span href="#" class="list-group-item list-group-item-warning">{{item}}</span>
         {% for element in articles[item]: %}
-        <a href="/article/edit?uuid={{element['uuid']}}" class="list-group-item list-group-item-action">{{element['article']}}
+        <a class="list-group-item list-group-item-action" href="/article/edit?uuid={{element['uuid']}}">
+            {{element['article']}} &nbsp; {{element['collection']}}
             <span>&nbsp;&nbsp;</span>
             {% for picture in element['pictures']: %}
             <img width="60px" src="data:image/jpeg;base64, {{ picture }}" alt="">
             {% endfor %}
+
         </a>
         {% endfor %}
     </div>
     <br>
     {% endfor %}
-<!--    {% for item in res: %}-->
-<!--    <img width="60px" src="data:image/jpeg;base64, {{ item['image_base64'] }}" alt="">-->
-<!--    {% endfor %}-->
     {% endif %}
 </div>
 

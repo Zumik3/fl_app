@@ -98,18 +98,14 @@ def articles_list():
                 .limit(ARTICLE_SELECT_LIMIT)
 
         current_group = None
-        # a_list = []
         for i in query_result:
             if current_group != i.group:
                 articles[i.group] = []
                 current_group = i.group
 
-            temp_d = {'article': i.article, 'uuid': i.uuid,
+            temp_d = {'article': i.article, 'collection': i.collection, 'uuid': i.uuid,
                       'pictures': db_handler.get_pictures_for_item(i)}
             articles[i.group].append(temp_d)
-            # a_list.append(i)
-
-        # res = db_handler.append_pictures_for_article_list(a_list)
 
     return render_template('article_list.html', articles=articles)
 
