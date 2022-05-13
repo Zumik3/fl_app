@@ -59,8 +59,8 @@
         </thead>
         <tbody>
         {% for item in image_collection: %}
-        <tr onclick="window.location.href='/article?uuid={{ item['uuid'] }}'; return false">
-            <td width="120px">
+        <tr onclick="window.location.href='/article?uuid={{item[uuid]}}'; return false">
+            <td>
                 <img width="120px" src="data:image/jpeg;base64, {{ item['image_base64'] }}" alt="">
             </td>
 
@@ -91,7 +91,7 @@ function search_data() {
        keyword_str = '&keyword=' + keyword;
     }
 
-    var s = window.location.search.match(new RegExp('ref' + '=([^&=]+)'));
+    let s = window.location.search.match(new RegExp('ref' + '=([^&=]+)'));
     document.location.replace('?ref=' + s[1] + keyword_str);
 
 }
