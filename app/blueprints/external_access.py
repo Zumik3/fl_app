@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, Response, json, request, render_template
+from flask import Blueprint, abort, request, render_template
 from jinja2 import TemplateNotFound
 from app import db_connector, db_handler, excel_handler
 from app.support import *

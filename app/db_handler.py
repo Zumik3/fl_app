@@ -1,7 +1,7 @@
 import db_connector
 import base64
 from uuid import uuid4
-from support import main_dict
+from app.support import main_dict
 
 
 def insert_rows(table_name, collection):

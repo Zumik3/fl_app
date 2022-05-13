@@ -1,5 +1,5 @@
-from flask import Flask, json, Response
-from support import resp
+from flask import Flask
+from app.support import resp
 from initial import initialize
 from blueprints.external_access import external_access
 from blueprints.internal_access import internal_access

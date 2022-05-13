@@ -1,6 +1,6 @@
 import pandas as pd
 import base64
-from support import *
+from app.support import *
 import os
 import re
 from io import BytesIO
