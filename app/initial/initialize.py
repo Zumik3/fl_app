@@ -23,7 +23,8 @@ def load_json_from_file(file_path):
 
 
 def prepare_link(element):
-    return {'created_date': datetime.datetime.now(), 'data': element['data'], 'ref': element['ref']}
+    return {'created_date': datetime.datetime.now(), 'data': element['data'],
+            'ref': element['ref']}
 
 
 def initialize_table(table_name, file_path):
@@ -34,10 +35,13 @@ def initialize_table(table_name, file_path):
             elements_data = hash_field(elements_data, 'password')
 
         elif 'images' in file_path:
-            elements_data = [db_handler.append_picture_for_insert(element) for element in elements_data]
-            elements_data = [element for element in elements_data if element is not None]
+            elements_data = [db_handler.append_picture_for_insert(element)
+                             for element in elements_data]
+            elements_data = [element for element in elements_data
+                             if element is not None]
 
         elif 'links' in file_path:
-            elements_data = [prepare_link(element) for element in elements_data]
+            elements_data = [prepare_link(element)
+                             for element in elements_data]
 
         db_handler.insert_rows(table_name, elements_data)
