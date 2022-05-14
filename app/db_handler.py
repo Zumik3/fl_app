@@ -23,14 +23,18 @@ def append_picture_for_select(element):
 
 def get_pictures_for_item(item):
     cursor = db_connector.Image.select().where(db_connector.Image.item == item)
-    return [base64.encodebytes(element.image).decode('UTF-8') for element in cursor]
+    return [base64.encodebytes(element.image).decode('UTF-8')
+            for element in cursor]
 
 
 def append_picture_for_insert(element):
-    item = db_connector.Item.get_or_none(db_connector.Item.uuid == element['item'])
+    item = db_connector.Item.get_or_none(
+        db_connector.Item.uuid == element['item'])
+
     if item is not None:
         return {'item': item, 'uuid': uuid4(), 'type': element['type'],
-                'image': base64.b64decode(element['image']), 'link': element['link']}
+                'image': base64.b64decode(element['image']),
+                'link': element['link']}
     else:
         return None
 

@@ -1,4 +1,5 @@
-from peewee import *
+from peewee import Model, CharField, BooleanField, IntegerField, FloatField, \
+    BlobField, ForeignKeyField, TextField, DateField
 from playhouse.mysql_ext import MySQLConnectorDatabase
 from uuid import uuid4
 

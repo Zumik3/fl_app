@@ -9,7 +9,9 @@ auth = HTTPBasicAuth()
 @auth.verify_password
 def verify_password(username, password):
 
-    user = db_connector.User.get_or_none(db_connector.User.username == username)
+    user = db_connector.User.get_or_none(
+        db_connector.User.username == username)
+
     if user is not None and check_password_hash(user.password, password):
         return username
 

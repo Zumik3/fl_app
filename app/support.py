@@ -13,8 +13,9 @@ SHEET_NAME = 'Sheet_'
 
 main_dict = dict(article='Артикул', collection='Сезон',
                  brand='Марка', type='Тип', color='Цвет',
-                 segment='Сегмент', material='Материал', lining='Подкладка', insole='Стелька',
-                 size_chart='Размерная сетка', packaged='В коробе', price='Цена')
+                 segment='Сегмент', material='Материал', lining='Подкладка',
+                 insole='Стелька', size_chart='Размерная сетка',
+                 packaged='В коробе', price='Цена')
 
 
 def resp(code, data):
