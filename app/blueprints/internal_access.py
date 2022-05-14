@@ -122,6 +122,3 @@ def article_edit():
                         for element in query_result]
 
     return render_template("article_edit.html", image_collection=image_collection)
-
-
-
