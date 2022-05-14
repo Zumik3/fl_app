@@ -2,6 +2,7 @@ from flask import Blueprint, request, render_template
 from app import db_connector, db_handler
 from app.auth import auth
 from app.support import resp, create_response
+from peewee import DatabaseError, IntegrityError
 
 ARTICLE_SELECT_LIMIT = 100
 internal_access = Blueprint('internal_access', __name__, template_folder='templates')
@@ -14,22 +15,22 @@ def show_status():
     try:
         db_connector.db.connect(reuse_if_open=True)
         status_table.append({'DBConnection': True})
-    except db_connector.DatabaseError:
+    except DatabaseError:
         status_table.append({'DBConnection': False})
 
     try:
         status_table.append({'Items': db_connector.Item.select().count()})
-    except db_connector.DatabaseError:
+    except DatabaseError:
         status_table.append({'Items': False})
 
     try:
         status_table.append({'Images': db_connector.Image.select().count()})
-    except db_connector.DatabaseError:
+    except DatabaseError:
         status_table.append({'Images': False})
 
     try:
         status_table.append({'Users': db_connector.User.select().count()})
-    except db_connector.DatabaseError:
+    except DatabaseError:
         status_table.append({'Users': False})
 
     return render_template('status.html', status_table=status_table)
@@ -46,7 +47,7 @@ def set_sku():
         db_connector.db.close()
         return resp(200, create_response())
 
-    except db_connector.IntegrityError as e:
+    except IntegrityError as e:
         return resp(400, create_response(False, str(e)))
 
 
@@ -65,7 +66,7 @@ def set_picture():
 
         return resp(200, create_response())
 
-    except db_connector.IntegrityError as e:
+    except IntegrityError as e:
         return resp(400, create_response(False, str(e)))
 
 
@@ -76,13 +77,14 @@ def create_link():
     result = db_handler.check_articles(request_data)
 
     if len(result) > 0:
-        return resp(400, {"success": False, "error": f"Element {result} not found in DB"})
+        return resp(400, {'success': False,
+                          'error': f'Element {result} not found in DB'})
 
     try:
         link = db_handler.create_link(request_data)
         return resp(200, create_response(True, None, link.ref))
 
-    except db_connector.IntegrityError as e:
+    except IntegrityError as e:
         return resp(400, create_response(False, str(e)))
 
 
@@ -94,8 +96,8 @@ def articles_list():
 
     if keyword is not None:
         query_result = db_connector.Item.select().where(
-            db_connector.Item.article.contains(keyword)).order_by(db_connector.Item.group)\
-                .limit(ARTICLE_SELECT_LIMIT)
+            db_connector.Item.article.contains(keyword)).order_by(
+            db_connector.Item.group).limit(ARTICLE_SELECT_LIMIT)
 
         current_group = None
         for i in query_result:
@@ -103,8 +105,8 @@ def articles_list():
                 articles[i.group] = []
                 current_group = i.group
 
-            temp_d = {'article': i.article, 'collection': i.collection, 'uuid': i.uuid,
-                      'pictures': db_handler.get_pictures_for_item(i)}
+            temp_d = {'article': i.article, 'collection': i.collection,
+                      'uuid': i.uuid, 'pictures': db_handler.get_pictures_for_item(i)}
             articles[i.group].append(temp_d)
 
     return render_template('article_list.html', articles=articles)
@@ -116,7 +118,8 @@ def article_edit():
     uuid = request.args.get('uuid')
     query_result = db_connector.Image.select().join(db_connector.Item).where(
         db_connector.Item.uuid == uuid)
-    image_collection = [db_handler.append_picture_for_select(element) for element in query_result]
+    image_collection = [db_handler.append_picture_for_select(element)
+                        for element in query_result]
 
     return render_template("article_edit.html", image_collection=image_collection)
 

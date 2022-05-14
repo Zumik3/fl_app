@@ -3,7 +3,8 @@ from jinja2 import TemplateNotFound
 from app import db_connector, db_handler, excel_handler
 from app.support import *
 
-external_access = Blueprint('external_access', __name__, template_folder='templates')
+external_access = Blueprint('external_access', __name__,
+                            template_folder='templates')
 
 
 @external_access.route('/ping/')
@@ -33,9 +34,11 @@ def show_collection():
         query_result = db_connector.Image.select().join(db_connector.Item).where(
             (db_connector.Item.uuid << data_array) & (db_connector.Image.type == 0))
 
-    image_collection = [db_handler.append_picture_for_select(element) for element in query_result]
+    image_collection = [db_handler.append_picture_for_select(element)
+                        for element in query_result]
 
-    return render_template('index.html', image_collection=image_collection, main_dict=main_dict)
+    return render_template('index.html', image_collection=image_collection,
+                           main_dict=main_dict)
 
 
 @external_access.route("/article/", methods=['GET'])
@@ -44,7 +47,9 @@ def show_article():
     uuid = request.args.get('uuid')
     query_result = db_connector.Image.select().join(db_connector.Item).where(
         db_connector.Item.uuid == uuid)
-    image_collection = [db_handler.append_picture_for_select(element) for element in query_result]
+
+    image_collection = [db_handler.append_picture_for_select(element)
+                        for element in query_result]
 
     return render_template("article.html", image_collection=image_collection)
 
@@ -64,8 +69,11 @@ def get_file():
     query_result = db_connector.Image.select().join(db_connector.Item).where(
         (db_connector.Item.uuid << data_array) & (db_connector.Image.type == 0))
 
-    image_collection = [db_handler.append_picture_for_select(element) for element in query_result]
-    result = excel_handler.main_table_to_excel(file_name, image_collection, True)
+    image_collection = [db_handler.append_picture_for_select(element)
+                        for element in query_result]
+
+    result = excel_handler.main_table_to_excel(file_name,
+                                               image_collection, True)
 
     return Response(status=200, mimetype="text/plain", response=result)
 
