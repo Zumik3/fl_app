@@ -18,13 +18,16 @@ def add_picture_to_excel(worksheet, image_base64, column, row):
     byte_data = base64.b64decode(base64_data)
     image_data = BytesIO(byte_data)
 
-    worksheet.insert_image(row, column, 'image', {'image_data': image_data, 'x_scale': 0.35, 'y_scale': 0.35,
-                                                  'x_offset': 2, 'y_offset': 2})
+    worksheet.insert_image(row, column, 'image',
+                           {'image_data': image_data, 'x_scale': 0.35,
+                            'y_scale': 0.35, 'x_offset': 2, 'y_offset': 2})
 
 
 def main_table_to_excel(file_name, image_collection, remove_file=False):
 
-    df = pd.DataFrame({main_dict[x]: [a[x] for a in image_collection] for x in main_dict})
+    df = pd.DataFrame({main_dict[x]: [a[x] for a in image_collection]
+                       for x in main_dict})
+
     df.insert(0, IMAGE_COLUMN_NAME, "")
 
     excel_writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
@@ -36,7 +39,8 @@ def main_table_to_excel(file_name, image_collection, remove_file=False):
     worksheet.set_default_row(DEFAULT_ROW_HEIGHT)
 
     for i in range(len(image_collection)):
-        add_picture_to_excel(worksheet, image_collection[i]['image_base64'], 0, i + 1)
+        add_picture_to_excel(worksheet, image_collection[i]['image_base64'],
+                             0, i + 1)
 
     excel_writer.save()
 
