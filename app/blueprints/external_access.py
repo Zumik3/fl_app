@@ -28,8 +28,9 @@ def show_collection():
 
     data_array = get_data_from_link(link)
     if keyword is not None:
-        query_result = db_connector.Image.select().join(db_connector.Item).where(
-            (db_connector.Item.uuid << data_array) & (db_connector.Item.article.contains(keyword)))
+        query_result = db_connector.Image.select().join(
+            db_connector.Item).where((db_connector.Item.uuid << data_array) &
+                                     (db_connector.Item.article.contains(keyword)))
     else:
         query_result = db_connector.Image.select().join(db_connector.Item).where(
             (db_connector.Item.uuid << data_array) & (db_connector.Image.type == 0))
@@ -76,4 +77,3 @@ def get_file():
                                                image_collection, True)
 
     return Response(status=200, mimetype="text/plain", response=result)
-
