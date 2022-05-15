@@ -29,19 +29,17 @@ def prepare_link(element):
 
 def initialize_table(table_name, file_path):
     if db_handler.is_empty(table_name):
-        elements_data = load_json_from_file(file_path)
+        input_data = load_json_from_file(file_path)
 
         if 'users' in file_path:
-            elements_data = hash_field(elements_data, 'password')
+            elements_data = hash_field(input_data, 'password')
 
         elif 'images' in file_path:
-            elements_data = [db_handler.append_picture_for_insert(element)
-                             for element in elements_data]
-            elements_data = [element for element in elements_data
-                             if element is not None]
+            elements_data = [el for el in [db_handler.append_picture_for_insert(el)
+                             for el in input_data] if el is not None]
 
         elif 'links' in file_path:
             elements_data = [prepare_link(element)
-                             for element in elements_data]
+                             for element in input_data]
 
         db_handler.insert_rows(table_name, elements_data)
