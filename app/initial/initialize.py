@@ -15,11 +15,11 @@ def hash_field(collection, hash_field_name):
 
 def load_json_from_file(file_path):
     if path.isfile(file_path) and path.splitext(file_path)[-1] == '.json':
-        with open(file_path) as f:
-            try:
+        try:
+            with open(file_path) as f:
                 return json.load(f)
-            except Exception as e:
-                print(f'json load error: {e}')
+        except Exception as e:
+            print(f'json load error: {e}')
 
 
 def prepare_link(element):

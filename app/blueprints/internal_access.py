@@ -121,4 +121,5 @@ def article_edit():
     image_collection = [db_handler.append_picture_for_select(element)
                         for element in query_result]
 
+    test = 'test'
     return render_template("article_edit.html", image_collection=image_collection)
