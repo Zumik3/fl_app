@@ -41,5 +41,7 @@ def initialize_table(table_name, file_path):
         elif 'links' in file_path:
             elements_data = [prepare_link(element)
                              for element in input_data]
+        else:
+            elements_data = input_data
 
         db_handler.insert_rows(table_name, elements_data)
