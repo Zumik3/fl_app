@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/normalize.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/component.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+        <script src="/static/js/modernizr.custom.js"></script>
+
+    <script>
+    $(document).ready(function(){
+      $('.slider').bxSlider()
+    });
+
+    </script>
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    {% endblock %}
+
+    <title>{{ item_buff.item['article'] }}</title>
+        <link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico"/>
+    {% endblock %}
+</head>
+<body onload="body_onload();">
+<!-- Your page content -->
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="width: 100%">
+    <div class="container">
+        <a class="navbar-brand" href="/collection?ref={{item_buff.ref_uuid}}&page={{request.args.get('page')}}"><img src="/static/backwards-arrow.png"></a>
+        <a class="navbar-brand" href="/article?uuid={{item_buff.prev_uuid}}&ref={{item_buff.ref_uuid}}&page={{request.args.get('page')}}"><img src="/static/backwards.png"></a>&nbsp;
+        <a class="navbar-brand" href="/article?uuid={{item_buff.next_uuid}}&ref={{item_buff.ref_uuid}}&page={{request.args.get('page')}}"><img src="/static/forward.png"></a>
+        <div class="navbar-brand">Артикул: {{item_buff.item['article']}}</div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="slider">
+        {% for item in image_collection %}
+        <div align="center"><img style="max-height:750px;" src="data:image/jpeg;base64, {{ item['image_base64'] }}" alt="image"></div>
+        {% endfor %}
+    </div>
+</div>
+
+    <section class="color-1">
+        <div align="center"><nav class="cl-effect-13">
+            {% for item in angle_collection %}
+            <a href="/angle?uuid={{item.uuid}}">{{item.link}}</a>
+            {% endfor %}
+            {% if angle_collection|length == 0 %}
+                <a href="#">Для данной модели ракурсы отсутствуют</a>
+            {% endif %}
+        </nav></div>
+    </section>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Optional JavaScript -->
+{{ bootstrap.load_js() }}
+
+<script>
+function search_data() {
+
+    let keyword_str = '';
+    let keyword = document.getElementById('search').value;
+    keyword = keyword.trim();
+
+    if (keyword !== '') {
+       keyword_str = '&keyword=' + keyword;
+    }
+
+    let s = window.location.search.match(new RegExp('ref' + '=([^&=]+)'));
+    document.location.replace('?ref=' + s[1] + keyword_str);
+
+}
+
+function body_onload() {
+
+    let s = window.location.search.match(new RegExp('keyword' + '=([^&=]+)'));
+    document.getElementById('search').value = s ? s[1] : '';
+
+}
+
+function save_static_data() {
+
+    const Http = new XMLHttpRequest();
+    Http.open("GET", "http://localhost:8080/getfile?ref=7f879c4f5f9648259a15ff4eb47b7018");
+
+    Http.onload = function () {
+        downloadFile(Http.response, 'test.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,')
+    }
+
+    Http.send();
+}
+
+function downloadFile(contentBase64, fileName, fileType) {
+
+    var bin = atob(contentBase64);
+    var ab = s2ab(bin);
+    var blob = new Blob([ab], { type: fileType });
+
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+}
+
+function s2ab(s) {
+
+  var buf = new ArrayBuffer(s.length);
+  var view = new Uint8Array(buf);
+  for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+  return buf;
+
+}
+
+</script>
+
+{% endblock %}
+</body>
+</html>

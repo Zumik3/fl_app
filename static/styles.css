@@ -1,0 +1,36 @@
+.table > tbody > tr > td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.list-rectangle {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-rectangle > li {
+    position: relative;
+    display: block;
+    margin-bottom: .25rem;
+    padding: .325rem .825rem .325rem 1.325rem;
+    color: #fff;
+    background: #C2185B;
+}
+
+.list-rectangle > li:last-child {
+    margin-bottom: 0;
+}
+
+.list-rectangle > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0.5rem;
+    background: #ec407a;
+}
+
+
+/* onclick="window.location.href='/article?uuid={{ image_collection[item]['uuid'] }}&ref={{ request.args.get('ref') }}'; return false" */

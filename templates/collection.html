@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block styles %}
+        <!-- Bootstrap CSS -->
+        {{ bootstrap.load_css() }}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {% endblock %}
+
+    <title>Analpa collection</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico"/>
+{% endblock %}
+
+<!-- Your page content -->
+{% block content %}
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col" class="text-center align-middle">Картинка</th>
+
+                {% for key in main_dict %}
+                    <th scope="col" class="text-center align-middle">{{ main_dict[key] }}</th>
+                {% endfor %}
+
+            </tr>
+            </thead>
+            <tbody id="collectionTable">
+            {% for item in range(image_collection|length) %}
+                <tr>
+                    <td>
+                        <img onclick="window.location.href='/article?uuid={{ image_collection[item]['uuid'] }}&ref={{ request.args.get('ref') }}&page={{ request.args.get('page') }}'; return false" width="120px" src="data:image/jpeg;base64, {{ image_collection[item]['image_base64'] }}"
+                             alt="">
+                    </td>
+
+                    {% for key in main_dict %}
+                        <td class="text-center align-middle">{{ image_collection[item][key] }}</td>
+                    {% endfor %}
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+            {#            <li class="page-item"><a class="page-link" href="#">Предыдущая</a></li>#}
+            {% for item in range(pagination|length) %}
+                {% if pagination[item]['page'] > 1 and pagination[item]['page'] - pagination[item - 1]['page'] > 1 %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-disabled="true">...</a>
+                    </li>
+                {% endif %}
+
+                {% if pagination[item]['current_page'] %}
+                <li class="page-item active"><a class="page-link"
+                                         href='/collection?{{ pagination[item]["ref"] }}'>{{ pagination[item]['page'] }}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link"
+                                         href='/collection?{{ pagination[item]["ref"] }}'>{{ pagination[item]['page'] }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {#            <li class="page-item"><a class="page-link" href="#">Следующая</a></li>#}
+        </ul>
+    </nav>
+
+{% endblock %}
+
+{% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+
+    <script>
+
+        $(document).ready(function () {
+            $("#tableInput").on("keyup", function () {
+                let value = $(this).val().toLowerCase();
+                $("#collectionTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+        function search_data() {
+
+            let keyword_str = '';
+            let keyword = document.getElementById('search').value;
+            keyword = keyword.trim();
+
+            if (keyword !== '') {
+                keyword_str = '&keyword=' + keyword;
+            }
+
+            let s = window.location.search.match(new RegExp('ref' + '=([^&=]+)'));
+            document.location.replace('?ref=' + s[1] + keyword_str);
+
+        }
+
+        function save_static_data() {
+
+            {#let s = window.location.search.match(new RegExp('ref' + '=([^&=]+)'));#}
+            {#let p = window.location.search.match(new RegExp('page' + '=([^&=]+)'));#}
+            let href = document.location.protocol + '//' + document.location.host + '/getfile?ref='
+                + getQueryVariable('ref') + '&page=' + getQueryVariable('page');
+
+            const Http = new XMLHttpRequest();
+            Http.open("GET", href);
+
+            Http.onload = function () {
+                downloadFile(Http.response, 'excel.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,')
+            }
+
+            Http.send();
+        }
+
+        function getQueryVariable(variable) {
+            const query = window.location.search.substring(1);
+            const vars = query.split('&')
+
+            for (let i = 0; i < vars.length; i++) {
+                let pair = vars[i].split('=');
+                if (pair[0] === variable) {
+                    return pair[1]
+                }
+            }
+            return false;
+        }
+
+        function downloadFile(contentBase64, fileName, fileType) {
+
+            var bin = atob(contentBase64);
+            var ab = s2ab(bin);
+            var blob = new Blob([ab], {type: fileType});
+
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function s2ab(s) {
+
+            let buf = new ArrayBuffer(s.length);
+            let view = new Uint8Array(buf);
+            for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+
+    </script>
+{% endblock %}
