@@ -4,9 +4,11 @@ from uuid import uuid4
 from support import main_dict, get_data_from_link, MAXIMUM_IMAGE_SIZE, ITEMS_PER_PAGE, WrongRefException, \
     MissingArgumentException
 from datetime import datetime
-from typing import NamedTuple, Iterable, List, Dict, Union, Any
+from typing import NamedTuple, Iterable, List, Dict, Union, Any, Optional
 from peewee import DatabaseError
 from repositories import ImageRepository
+
+IMAGE_TYPE_DEFAULT = 0
 
 
 class ItemBuffer(NamedTuple):
@@ -309,18 +311,14 @@ def delete_item(uuid: str) -> None:
 
 @db_connector.db.atomic()
 def delete_picture(uuid) -> None:
-    picture = db_connector.Image.get_or_none(db_connector.Image.uuid == uuid)
-
-    if picture is not None:
-        pass
+    repository = ImageRepository()
+    repository.delete_picture(uuid)
 
 
-def get_raw_picture_by_item(item_id: str, image_type: int | str = 0):
-    if image_type is None:
-        image_type = 0
-    else:
-        image_type = int(image_type)
+def get_raw_picture_by_item(item_id: str,
+                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes:
 
+    image_type = IMAGE_TYPE_DEFAULT if image_type is None else int(image_type)
     repository = ImageRepository()
     image_id = repository.get_image_id_by_item(item_id, image_type)
 
@@ -351,17 +349,16 @@ def get_pictures_by_item(uuid: str) -> list:
 
 def form_pagination(link, page: int) -> list:
     data_array = get_data_from_link(link)
-    remainder = len(data_array) % ITEMS_PER_PAGE
-    pages = len(data_array) // ITEMS_PER_PAGE + 1 if remainder > 0 else 0
-    pages = 1 if pages == 0 else pages
+    pages = (len(data_array) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE
+    pages = max(1, pages)
 
-    selected_tuple = (0, page - 3, page - 2, page - 1, page, page + 1, pages - 1)
+    selected_pages = (0, page - 3, page - 2, page - 1, page, page + 1, pages - 1)
     pagination: List[Dict[str, Union[Union[str, bool, int], Any]]] = []
     for count in range(pages):
 
-        if count in selected_tuple:
+        if count in selected_pages:
             current_page: int = count + 1
-            f_str = f'ref={link.ref}&page={current_page}'
-            pagination.append({'ref': f_str, 'current_page': current_page == page, 'page': current_page})
+            ref_str = f'ref={link.ref}&page={current_page}'
+            pagination.append({'ref': ref_str, 'current_page': current_page == page, 'page': current_page})
 
     return pagination

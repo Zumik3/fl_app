@@ -17,14 +17,10 @@ def show_collection():
     if link is None:
         return resp(404, create_response(False, LINK_NOT_FOUND_MESSAGE))
 
-    page = request.args.get('page')
-    if page is None:
+    try:
+        page = int(request.args.get('page', 1))
+    except ValueError:
         page = 1
-    elif type(page) != type(int):
-        try:
-            page = int(page)
-        except ValueError:
-            page = 1
 
     article_collection = db_handler.form_article_collection(link, page)
     image_collection = [db_handler.append_picture_for_select(element)
