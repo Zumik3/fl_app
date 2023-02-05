@@ -1,3 +1,3 @@
 # fl_app
 
-API, that helps to maintain picture DB.
+API, that helps to maintain a picture DB.
