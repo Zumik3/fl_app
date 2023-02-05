@@ -323,6 +323,7 @@ def get_raw_picture_by_item(item_id: str, image_type: int | str = 0):
 
     repository = ImageRepository()
     image_id = repository.get_image_id_by_item(item_id, image_type)
+
     return repository.get_raw_picture(image_id, image_type)
 
 
