@@ -26,7 +26,12 @@ main_dict = OrderedDict(article='Артикул', collection='Сезон',
                         insole='Стелька', size_chart='Размерная сетка',
                         packaged='В коробе/упаковке', price='Цена')
 
-image_table_names = {0: 'BaseImage', 1: 'BigImage', 2: 'AngleImage'}
+
+class ImageTableNameMapper:
+    image_table_names = {0: 'BaseImage', 1: 'BigImage', 2: 'AngleImage'}
+
+    def __init__(self, image_type: int):
+        self.image_table = self.image_table_names[image_type]
 
 
 class WrongRefException(BaseException):
