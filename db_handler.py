@@ -222,7 +222,7 @@ def form_article_collection(link: db_connector.Link, page: int = 1) -> db_connec
 
     return db_connector.Image.select().join(db_connector.Item).where(
         (db_connector.Item.uuid << data_array) & (db_connector.Image.type == 0)) \
-        .order_by(db_connector.Item.article).paginate(page, ITEMS_PER_PAGE)
+        .order_by(db_connector.Item.article).paginate(page, 5000) # пока через костыль.
 
 
 def form_filtered_image_data(iterable: Iterable) -> list:
@@ -285,7 +285,7 @@ def delete_picture(uuid) -> None:
 
 def get_raw_picture_by_item(item_id: str,
                             image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes or None:
-    if item_id == '':
+    if item_id is None:
         return None
 
     image_type = IMAGE_TYPE_DEFAULT if image_type is None else int(image_type)
