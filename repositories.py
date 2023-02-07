@@ -12,7 +12,7 @@ class ImageRepository:
                                       self.image.type == image_type).uuid
 
     @staticmethod
-    def get_raw_picture(self, image_id: str, image_type: int = 0):
+    def get_raw_picture(image_id: str, image_type: int = 0):
         table_name = ImageTableNameMapper(image_type).image_table
         image_table = getattr(db_connector, table_name)
         typed_image = image_table.get_or_none(image_table.image_id == image_id)
