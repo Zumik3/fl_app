@@ -20,63 +20,31 @@ class ItemBuffer(NamedTuple):
 
 def get_status_table():
     status_table = []
-
-    name = 'connection'
-    try:
-        db_connector.db.connect(reuse_if_open=True)
-        status_table.append({name: True})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'items'
-        status_table.append({name: db_connector.Item.select().count()})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'images'
-        status_table.append({name: db_connector.Image.select().count()})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'images (small)'
-        status_table.append({name: db_connector.Image.select().where(
-            db_connector.Image.type == 0).count()})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'images (big)'
-        status_table.append({name: db_connector.Image.select().where(
-            db_connector.Image.type == 1).count()})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'images (angle)'
-        status_table.append({name: db_connector.Image.select().where(
-            db_connector.Image.type == 2).count()})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'links'
-        status_table.append({name: db_connector.Link.select().count()})
-    except DatabaseError:
-        status_table.append({name: False})
-
-    try:
-        name = 'image size (Mb)'
-        image_size = db_connector.fn.SUM(db_connector.Image.size).alias('size')
-        query = (db_connector.Image.select(image_size))
-        cursor = query.execute()
-        for (element) in cursor:
-            status_table.append({name: f'{element.size / 1024:.2f}'})
-
-    except DatabaseError:
-        status_table.append({name: 0})
+    names = ['connection', 'items', 'images', 'images (small)', 'images (big)', 'images (angle)', 'links',
+             'image size (Mb)']
+    queries = [
+        db_connector.db.connect(reuse_if_open=True),
+        db_connector.Item.select().count(),
+        db_connector.Image.select().count(),
+        db_connector.Image.select().where(db_connector.Image.type == 0).count(),
+        db_connector.Image.select().where(db_connector.Image.type == 1).count(),
+        db_connector.Image.select().where(db_connector.Image.type == 2).count(),
+        db_connector.Link.select().count(),
+        (db_connector.Image.select(db_connector.fn.SUM(db_connector.Image.size).alias('size')))
+    ]
+    for name, query in zip(names, queries):
+        try:
+            if name == 'connection':
+                query
+                status_table.append({name: True})
+            elif name == 'image size (Mb)':
+                cursor = query.execute()
+                for (element) in cursor:
+                    status_table.append({name: f'{element.size / 1024:.2f}'})
+            else:
+                status_table.append({name: query})
+        except DatabaseError:
+            status_table.append({name: False})
 
     return status_table
 
