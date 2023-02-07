@@ -52,16 +52,11 @@ def resp(code, data):
                     response=json.dumps(data) + '\n')
 
 
-def create_response(success: bool = True, error: str = None, ref: str = None, data=None) -> dict:
-    """Creates dict for HTTP response"""
-    result = {"success": success}
-    if error is not None:
-        result["error"] = error
-    if ref is not None:
-        result["ref"] = ref
-    if data is not None:
-        result["data"] = data
-    return result
+def create_response(success: bool = True, error: str = None,
+                    ref: str = None, data=None) -> dict:
+    result = {"success": success, "error": error, "ref": ref, "data": data}
+
+    return {key: value for key, value in result.items() if value is not None}
 
 
 def get_data_from_link(link):
