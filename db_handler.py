@@ -35,7 +35,6 @@ def get_status_table():
     for name, query in zip(names, queries):
         try:
             if name == 'connection':
-                query
                 status_table.append({name: True})
             elif name == 'image size (Mb)':
                 cursor = query.execute()
@@ -222,7 +221,7 @@ def form_article_collection(link: db_connector.Link, page: int = 1) -> db_connec
 
     return db_connector.Image.select().join(db_connector.Item).where(
         (db_connector.Item.uuid << data_array) & (db_connector.Image.type == 0)) \
-        .order_by(db_connector.Item.article).paginate(page, 5000) # пока через костыль.
+        .order_by(db_connector.Item.article).paginate(page, ITEMS_PER_PAGE)
 
 
 def form_filtered_image_data(iterable: Iterable) -> list:

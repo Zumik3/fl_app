@@ -79,10 +79,8 @@ def get_picture():
         raw_picture = db_handler.get_raw_picture_by_item(item_id, image_type)
         if raw_picture is None:
             return request.routing_exception
+
         return send_file(BytesIO(raw_picture), mimetype='image/jpg')
-        # Response(status=200, mimetype="text/plain", response=raw_picture)
-        # send_file(BytesIO(raw_picture), mimetype='image/jpg')
+
     except AttributeError:
         return Response(status=404, mimetype="text/plain", response='{not found}')
-
-        # return result
