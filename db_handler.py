@@ -284,7 +284,9 @@ def delete_picture(uuid) -> None:
 
 
 def get_raw_picture_by_item(item_id: str,
-                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes:
+                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes or None:
+    if item_id == '':
+        return None
 
     image_type = IMAGE_TYPE_DEFAULT if image_type is None else int(image_type)
     repository = ImageRepository()
