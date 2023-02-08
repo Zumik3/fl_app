@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import NamedTuple, Iterable, List, Dict, Union, Any, Optional
 from peewee import DatabaseError
 from repositories import ImageRepository
+from excel_handler import save_collection_to_excel
 
 IMAGE_TYPE_DEFAULT = 0
 
@@ -35,7 +36,6 @@ def get_status_table():
     for name, query in zip(names, queries):
         try:
             if name == 'connection':
-                query
                 status_table.append({name: True})
             elif name == 'image size (Mb)':
                 cursor = query.execute()
@@ -219,7 +219,6 @@ def form_angle_collection(item: db_connector.Item) -> db_connector.db.cursor() o
 
 def form_article_collection(link: db_connector.Link, page: int = 1) -> db_connector.db.cursor:
     data_array = get_data_from_link(link)
-
     return db_connector.Image.select().join(db_connector.Item).where(
         (db_connector.Item.uuid << data_array) & (db_connector.Image.type == 0)) \
         .order_by(db_connector.Item.article).paginate(page, ITEMS_PER_PAGE)
@@ -227,6 +226,7 @@ def form_article_collection(link: db_connector.Link, page: int = 1) -> db_connec
 
 def form_filtered_image_data(iterable: Iterable) -> list:
     picture_data = [append_picture_for_insert(element) for element in iterable]
+    # if append_picture_for_insert(element) is not None]
     return list(filter(lambda x: x is not None, picture_data))
 
 
@@ -284,7 +284,9 @@ def delete_picture(uuid) -> None:
 
 
 def get_raw_picture_by_item(item_id: str,
-                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes:
+                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes or None:
+    if item_id is None:
+        return None
 
     image_type = IMAGE_TYPE_DEFAULT if image_type is None else int(image_type)
     repository = ImageRepository()
@@ -330,3 +332,11 @@ def form_pagination(link, page: int) -> list:
             pagination.append({'ref': ref_str, 'current_page': current_page == page, 'page': current_page})
 
     return pagination
+
+
+def form_base64_excel_collection(link: db_connector.Link, page: int = 1) -> str or None:
+    article_collection = form_article_collection(link, page)
+    image_collection = [append_picture_for_select(element)
+                        for element in article_collection]
+
+    return save_collection_to_excel(image_collection, True)

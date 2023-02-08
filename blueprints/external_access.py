@@ -61,11 +61,7 @@ def get_file():
     if link is None:
         return resp(404, create_response(False, LINK_NOT_FOUND_MESSAGE))
 
-    article_collection = db_handler.form_article_collection(link, page=page)
-    image_collection = [db_handler.append_picture_for_select(element)
-                        for element in article_collection]
-
-    base64_excel = excel_handler.save_collection_to_excel(image_collection, True)
+    base64_excel = db_handler.form_base64_excel_collection(link, page)
 
     return Response(status=200, mimetype="text/plain", response=base64_excel)
 
@@ -77,8 +73,10 @@ def get_picture():
         image_type = request.args.get('type')
 
         raw_picture = db_handler.get_raw_picture_by_item(item_id, image_type)
-        result = send_file(BytesIO(raw_picture), mimetype='image/jpg')
-    except:
-        result = Response(status=200, mimetype="text/plain", response='{not found}')
+        if raw_picture is None:
+            return request.routing_exception
 
-    return result
+        return send_file(BytesIO(raw_picture), mimetype='image/jpg')
+
+    except AttributeError:
+        return Response(status=404, mimetype="text/plain", response='{not found}')
