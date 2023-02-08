@@ -61,11 +61,7 @@ def get_file():
     if link is None:
         return resp(404, create_response(False, LINK_NOT_FOUND_MESSAGE))
 
-    article_collection = db_handler.form_article_collection(link, page=page)
-    image_collection = [db_handler.append_picture_for_select(element)
-                        for element in article_collection]
-
-    base64_excel = excel_handler.save_collection_to_excel(image_collection, True)
+    base64_excel = db_handler.form_base64_excel_collection(link, page)
 
     return Response(status=200, mimetype="text/plain", response=base64_excel)
 
