@@ -31,6 +31,22 @@ def set_sku():
         return resp(400, create_response(False, str(e)))
 
 
+@internal_access.route("/api/set_price", methods=['POST'])
+@auth.login_required
+def set_price():
+    try:
+        request_data = request.get_json(force=True)
+
+        for element in request_data:
+            item = db_handler.get_item(element['uuid'])
+            db_handler.update_item(item, element)
+
+        return resp(200, create_response())
+
+    except IntegrityError as e:
+        return resp(400, create_response(False, str(e)))
+
+
 @internal_access.route("/api/delete_sku", methods=['DELETE'])
 @auth.login_required
 def delete_sku():
