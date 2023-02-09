@@ -62,14 +62,7 @@ def save_collection_to_excel(image_collection: list, remove_file: bool = True) -
 
 
 def get_scale_sizes(width: float, height: float) -> float:
-    if width > 0:
-        x_scale = BASE_IMAGE_WIDTH / width
-    else:
-        x_scale = BASE_IMAGE_RATIO
-
-    if height > 0:
-        y_scale = BASE_IMAGE_HEIGHT / height
-    else:
-        y_scale = BASE_IMAGE_RATIO
+    x_scale = BASE_IMAGE_WIDTH / width if width > 0 else BASE_IMAGE_RATIO
+    y_scale = BASE_IMAGE_HEIGHT / height if height > 0 else BASE_IMAGE_RATIO
 
     return min(x_scale, y_scale)
