@@ -235,13 +235,16 @@ def add_or_update_item(element) -> None:
     item = get_item(element['uuid'])
 
     if item is not None:
-        for key in element.keys():
-            setattr(item, key, element[key])
-
-        item.save()
-
+        update_item(item, element)
     else:
         db_connector.Item.insert(element).execute()
+
+
+def update_item(item, element) -> None:
+    for key in element.keys():
+        setattr(item, key, element[key])
+
+    item.save()
 
 
 @db_connector.db.atomic()
