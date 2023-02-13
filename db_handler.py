@@ -342,4 +342,4 @@ def form_base64_excel_collection(link: db_connector.Link, page: int = 1) -> str 
     image_collection = [append_picture_for_select(element)
                         for element in article_collection]
 
-    return save_collection_to_excel(image_collection, True)
+    return save_collection_to_excel(image_collection)
