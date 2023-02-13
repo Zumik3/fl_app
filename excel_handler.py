@@ -33,7 +33,7 @@ def add_picture_to_excel(worksheet, image: dict, column: int, row: int) -> None:
                             'y_scale': min_scale, 'x_offset': 2, 'y_offset': 2})
 
 
-def save_collection_to_excel(image_collection: list, remove_file: bool = True) -> base64:
+def save_collection_to_excel(image_collection: list) -> base64:
     """Save collection to Excel file in base64"""
     df = pd.DataFrame({main_dict[x]: [a[x] for a in image_collection]
                        for x in main_dict})
@@ -54,9 +54,7 @@ def save_collection_to_excel(image_collection: list, remove_file: bool = True) -
     excel_writer.save()
 
     base64result = file_to_base64(file_name)
-
-    if remove_file:
-        os.remove(file_name)
+    os.remove(file_name)
 
     return base64result
 
