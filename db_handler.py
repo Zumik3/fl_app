@@ -79,7 +79,7 @@ def append_picture_for_select(element) -> dict:
     return result
 
 
-def get_raw_picture(image: db_connector.Image):
+def get_raw_picture(image: db_connector.Image) -> db_connector.Image | None:
     table_name = get_image_table_name(image.type)
     image_table = getattr(db_connector, table_name)
     return image_table.get_or_none(image_table.image_id == image.uuid)
