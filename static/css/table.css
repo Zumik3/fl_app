@@ -1,0 +1,3 @@
+.table-hover-border tbody tr:hover td, .table-hover tbody tr:hover th {
+  border-color: #b53a2d;
+}
