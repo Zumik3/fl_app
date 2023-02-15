@@ -106,8 +106,6 @@
 
         function save_static_data() {
 
-            {#let s = window.location.search.match(new RegExp('ref' + '=([^&=]+)'));#}
-            {#let p = window.location.search.match(new RegExp('page' + '=([^&=]+)'));#}
             let href = document.location.protocol + '//' + document.location.host + '/getfile?ref='
                 + getQueryVariable('ref') + '&page=' + getQueryVariable('page');
 
