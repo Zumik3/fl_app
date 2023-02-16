@@ -79,15 +79,17 @@ def append_picture_for_select(element) -> dict:
     return result
 
 
-def get_raw_picture(image: db_connector.Image) -> db_connector.Image | None:
+def get_raw_picture(image: db_connector.Image) -> db_connector.BigImage \
+                                                  | db_connector.BaseImage | \
+                                                  db_connector.AngleImage | None:
     table_name = get_image_table_name(image.type)
     image_table = getattr(db_connector, table_name)
     return image_table.get_or_none(image_table.image_id == image.uuid)
 
 
 def get_base64_picture(image: db_connector.Image) -> str:
-    blob = get_raw_picture(image)
-    return base64.encodebytes(blob.picture).decode('UTF-8') if blob is not None else ''
+    picture = get_raw_picture(image)
+    return base64.encodebytes(picture.picture).decode('UTF-8') if picture is not None else ''
 
 
 def append_picture_for_insert(element) -> dict or None:
@@ -192,7 +194,7 @@ def initialize_item_buff(args) -> ItemBuffer or None:
                       item=check_article(uuid), ref_uuid=link.ref)
 
 
-def get_raw_picture_by_id(uuid: str):
+def get_raw_picture_by_id(uuid: str) -> db_connector.Image | None:
     picture = db_connector.Image.get_or_none(db_connector.Image.uuid == uuid)
     if picture is not None:
         return get_raw_picture(picture)
