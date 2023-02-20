@@ -243,6 +243,9 @@ def add_or_update_item(element) -> None:
 
 
 def update_item(item, element) -> None:
+    if item is None:
+        return
+
     for key in element.keys():
         setattr(item, key, element[key])
 
