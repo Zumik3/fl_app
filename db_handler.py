@@ -228,7 +228,7 @@ def form_article_collection(link: db_connector.Link, page: int = 1) -> db_connec
 
 def form_filtered_image_data(iterable: Iterable) -> list:
     picture_data = [append_picture_for_insert(element) for element in iterable]
-    # if append_picture_for_insert(element) is not None]
+    # if append_picture_for_insert(element) is not None
     return list(filter(lambda x: x is not None, picture_data))
 
 
@@ -243,6 +243,9 @@ def add_or_update_item(element) -> None:
 
 
 def update_item(item, element) -> None:
+    if item is None:
+        return
+
     for key in element.keys():
         setattr(item, key, element[key])
 
