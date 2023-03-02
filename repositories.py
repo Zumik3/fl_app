@@ -16,6 +16,7 @@ class ImageRepository:
         table_name = ImageTableNameMapper(image_type).image_table
         image_table = getattr(db_connector, table_name)
         typed_image = image_table.get_or_none(image_table.image_id == image_id)
+
         if typed_image is not None:
             return typed_image.picture
 
