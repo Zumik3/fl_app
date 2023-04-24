@@ -1,7 +1,6 @@
 from io import BytesIO
 from flask import Blueprint, request, render_template, send_file
 import db_handler
-import excel_handler
 from support import *
 
 
@@ -71,8 +70,9 @@ def get_picture():
     try:
         item_id = request.args.get('uuid')
         image_type = request.args.get('type')
+        image_angle = request.args.get('angle')
 
-        raw_picture = db_handler.get_raw_picture_by_item(item_id, image_type)
+        raw_picture = db_handler.get_raw_picture_by_item(item_id, image_type, image_angle)
         if raw_picture is None:
             return request.routing_exception
 

@@ -291,7 +291,8 @@ def delete_picture(uuid) -> None:
 
 
 def get_raw_picture_by_item(item_id: str,
-                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT) -> bytes or None:
+                            image_type: Optional[Union[int, str]] = IMAGE_TYPE_DEFAULT,
+                            image_angle: str = None) -> bytes or None:
     if item_id is None:
         return None
 
