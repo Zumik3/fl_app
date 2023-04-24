@@ -298,7 +298,10 @@ def get_raw_picture_by_item(item_id: str,
 
     image_type = IMAGE_TYPE_DEFAULT if image_type is None else int(image_type)
     repository = ImageRepository()
-    image_id = repository.get_image_id_by_item(item_id, image_type)
+    if image_type == 2 and image_angle is not None:
+        image_id = repository.get_image_id_by_item_and_angle(item_id, image_angle)
+    else:
+        image_id = repository.get_image_id_by_item(item_id, image_type)
 
     return repository.get_raw_picture(image_id, image_type)
 

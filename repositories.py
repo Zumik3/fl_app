@@ -12,8 +12,8 @@ class ImageRepository:
                                       self.image.type == image_type).uuid
 
     def get_image_id_by_item_and_angle(self, item_id: str, image_angle: str = None) -> uuid.uuid4() or None:
-        return self.image.get_or_none(self.image.item == item_id,
-                                      self.image.type == image_angle).uuid
+        return self.image.get_or_none((self.image.item == item_id) & (self.image.type == 2) &
+                                      (self.image.link.endswith('_' + image_angle))).uuid
 
     @staticmethod
     def get_raw_picture(image_id: str, image_type: int = 0):
